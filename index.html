@@ -3,40 +3,111 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Inspire</title>
+	<script src="https://use.fontawesome.com/b915c6e2c8.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
 	<link rel="stylesheet" href="assets/css/style.css">
 </head>
 
-<body id="body">
-	<div id="weather">
-		{{weather}}
+<body>
+	<div class="row">
+
+		<div class="col s2">
+			<div id="background">
+				<div class="background" :style="{ backgroundImage: 'url(' + imageUrl + ')' }"></div>
+				<button id="next-background" class="waves-effect waves-light btn" @click="nextImage"><i class="fa fa-picture-o"></i><i class="fa fa-chevron-right"></i></button>
+			</div>
+		</div>
+
+		<div class="col s3 offset-s7 right-align">
+			<div id="weather">
+				<h4>
+					<span v-if="main.toLowerCase() == 'clouds'"><i class="fa fa-cloud"></i></span>
+					<span v-if="main.toLowerCase() == 'clear'"><i class="fa fa-sun-o"></i></span>
+					<span v-if="main.toLowerCase() == 'rain'"><i class="fa fa-tint"></i></span>
+					<span v-if="fahrenheit" @click="toggleFahrenheit">{{ tempF }}</span>
+					<span v-if="fahrenheit == false" @click="toggleFahrenheit">{{ tempC }}</span>
+				</h4>
+				<p>{{ name }}</p>
+			</div>
+		</div>
 	</div>
 
+	<div id="clock">
+		<div class="center-align">
+			<h1>
+				<span v-if="militaryTime">{{ hours }}</span>
+				<span v-if="militaryTime == false">{{ noMilitaryHours }}</span> : {{ minutes }}
+				<button class="btn-floating btn-large waves-effect waves-light red hoverable" @click="toggleMilitary"><i class="fa fa-clock-o"></i></button>
+			</h1>
+			<h2>{{ message }}<span v-if="person.exists">, {{ person.name }}</span>
+			</h2>
+			<div v-if="person.exists == false">
+				<h3>What is your name?</h3>
+				<form @submit.prevent="setName(name)">
+					<input type="text" v-model="name">
+					<button class="waves-effect waves-light btn" type="submit"><i class="fa fa-chevron-right"></i></button>
+				</form>
+			</div>
+		</div>
+	</div>
+
+<div class="left">
 	<div id="quote">
-
+		<p id="quote-text">
+		<button class="waves-effect waves-light btn" @click="nextQuote"><i class="fa fa-quote-left"></i><i class="fa fa-quote-right"></i><i class="fa fa-chevron-right"></i></button><br>
+			<span v-on:mouseover="active = !active" v-on:mouseleave="active = !active">"{{ quoteText }}"</span>
+			<span v-if="active">- <strong>{{ quoteAuthor }}</strong></span>
+		</p>
 	</div>
-
-	<div id="todo">
-
-	</div>
+</div>
 
 
+	<div class="right">
+		<div id="todo">
+			<div class="bg-card">
+				<h6>Things To Do: {{ todos.length }}</h6>
+					<form id="todo-form" @submit.prevent="submitTodo(todo)">
+						<input id="todo-input" type="text" v-model="todo">
+						<button id="pencil" type="submit"><i class="fa fa-pencil"></i></button>
+					</form>
+					<div class="todos">
+						<ul v-for="item in todos">
+							<li><span @click="filterDone(item)" :class="{ completed: item.isCompleted }">{{item.task}}</span>
+								<i class="fa fa-trash-o" @click="remove(item)"></i></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
 
 
-		<!--JS Libraries-->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.10/vue.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+	<!--JS Libraries-->
+	<script src="https://unpkg.com/vue/dist/vue.js"></script>
 	<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
 
 	<!--Initialize App-->
 	<script src="app/init.js"></script>
+	<script src="app/components/clock/clock-service.js"></script>
 	<script src="app/components/weather/weather-service.js"></script>
-	<script src="app/components/image/image-service.js"></script>
 	<script src="app/components/quote/quote-service.js"></script>
+	<script src="app/components/image/image-service.js"></script>
 	<script src="app/components/todo/todo-service.js"></script>
 
 	<!--Load your scripts below-->
+	<script src="app/components/clock/clock-controller.js"></script>
 	<script src="app/components/weather/weather-controller.js"></script>
-	<script src="app/components/image/image-controller.js"></script>
 	<script src="app/components/quote/quote-controller.js"></script>
+	<script src="app/components/image/image-controller.js"></script>
 	<script src="app/components/todo/todo-controller.js"></script>
 
 </body>
